@@ -76,7 +76,7 @@ SOURCE_SAMPLE_HASH = 68414605a320573a0f9ad1c8e71ab013
 TARGET_SAMPLE_HASH = 6d0bb00954ceb7fbee436bb55a8397a9
 ```
 
-Now reduce it to a number of bytes which is reasonable for your volume's size.
+Keep going until you get close enough to a starting point which is reasonable for your volume's size.
 
 Once you have your number, round it down generously. I rounded mine down a few hundred gigabytes just to be sure: it's better to start too early than too late.
 
