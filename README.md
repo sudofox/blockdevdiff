@@ -10,6 +10,7 @@ Usage: ./blockdevdiff.sh </dev/source_device> </dev/target_device> <starting off
 
 
 ```
+# ./blockdevdiff.sh testfile1.bin testfile2.bin 0 100 10
 INFO]        ===== Block Device Differ =====
 [INFO]        sudofox/blockdevdiff
 [INFO]        This tool is read-only and makes no modifications.
@@ -77,15 +78,15 @@ TARGET_SAMPLE_HASH = 6d0bb00954ceb7fbee436bb55a8397a9
 
 Now reduce it to a number of bytes which is reasonable for your volume's size.
 
-Once you have your number, divide it by your original dd's block size. Then, round it down generously. I rounded mine down a few hundred gigabytes just to be sure: it's better to start too early than too late.
+Once you have your number, round it down generously. I rounded mine down a few hundred gigabytes just to be sure: it's better to start too early than too late.
 
 Here is your new command (DO NOT COPY AND PASTE)
 
 ```
-dd if=/dev/source_device_here of=/dev/target_device_here bs=128K conv=notrunc seek=133000000 skip=133000000 status=progress
+dd if=/dev/source_device_here of=/dev/target_device_here bs=128K conv=notrunc seek=XXXXXXXXX skip=XXXXXXXXXXX iflag=skip_bytes oflag=seek_bytes status=progress
 ```
 
-if: input file (e.g. a device file lik /dev/sda
+if: input file (e.g. a device file like /dev/sda)
 
 of: output file
 
@@ -93,15 +94,17 @@ Apparently conv=notrunc doesn't really make any difference for actual block devi
 
 If you are using this on VM images stored on another filesystem then you DEFINITELY want it.
 
-seek: dictates the number of starting-block offset from the source device
+Pass the iflag=skip_bytes and oflag=seek_bytes, so that we can use bytes instead of blocks here, which makes things less confusing overall.
 
-skip: dictates the number of starting-block offset on the target device
+seek: dictates the position to start copying bytes from the source device
+
+skip: dictates the position to start copying bytes to the target device
 
 seek and skip should be the same! 
 
 status=progress: so you can actually see what dd is doing
 
-# "Email when done" functionality.
+## "Email when done" functionality.
 This will require some installed mailserver (e.g. Exim, Postfix, etc) so that the "mail" binary will function.
 In cases where you need to get a really specific offset on a really big volume, you can pass one final argument containing an email address.
 
